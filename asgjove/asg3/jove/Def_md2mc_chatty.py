@@ -89,6 +89,7 @@ t_ignore = " \t"
 
 def t_NEWLINE(t):
     r'\n+'
+    print(" Got a new line ") 
     global LINENO
     if LINENO==-1:
         LINENO = 2
@@ -487,6 +488,7 @@ def p_nfa_md(t):
 
 def p_pda_md(t):
     '''md : PDA lines'''
+    print("Parsed PDA keyword")
     mc = get_machine_components(t[2], 'PDA')
     (From_s, To_s,
      G_in,   G_out,
@@ -590,7 +592,7 @@ def p_ID_or_EPS_or_B(t):
     elif id=="''":
         id = ''
     #--
-    print("Got one label of a DFA, which is an ID, that being", id)
+    print("Got one label which is an ID: ", id)
     lineattr = default_line_attr()
     lineattr.update({ "SigmaEps" : [ id ] })
     t[0] = lineattr
@@ -699,6 +701,7 @@ def md2mc(src="None", fname="None"):
         mdstr = src
     myparser = yacc()
     mdlexer = lex()   # Build lexer custom-made for markdown
+    print(" Custom-made lexer for markdown starting to strip comments starting with !!")
     rslt = myparser.parse(mdstr, lexer=mdlexer) # feed into parse fn
     #--
     # Now, based on machine type, return correct machine object.
@@ -715,6 +718,7 @@ def md2mc(src="None", fname="None"):
         assert(len(Q0)==1)
         q0 = list(Q0)[0]
     if machine_type=='DFA':
+        print('Machine type is DFA')
         return {"Q"    : From_s | To_s,
                 "Sigma": Sigma,
                 "Delta": Delta,
@@ -722,6 +726,7 @@ def md2mc(src="None", fname="None"):
                 "F"    : F}
     
     elif machine_type=='NFA':
+        print('Machine type is NFA')
         return {"Q"    : From_s | To_s,
                 "Sigma": Sigma - {'',""},
                 "Delta": Delta,
@@ -729,6 +734,7 @@ def md2mc(src="None", fname="None"):
                 "F"    : F}
     
     elif machine_type=='PDA':
+        print('Machine type is PDA')
         G_out_set = reduce(lambda x,y: x|y, map(set, G_out), set({}))
         return {"Q"    : From_s | To_s,
                 "Sigma": Sigma - {'',""},

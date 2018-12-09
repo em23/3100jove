@@ -116,13 +116,15 @@ def mk_plus_nfa(N1, N2):
     
 def p_expression_plus_id(t):
     '''expression : catexp'''
+    print("Got a concatenation expression")
     # Simply inherit the attribute from t[1] and pass on    
-    t[0] = t[1] 
+    t[0] = t[1]
 
 #-- * The C -> C O production
 
 def p_expression_cat(t):
     '''catexp :  catexp ordyexp'''
+    print("Got a concatenation expression with an ordinary expression")
     t[0] = mk_cat_nfa(t[1], t[2])
 
 def mk_cat_nfa(N1, N2):
@@ -154,6 +156,7 @@ def mk_cat_nfa(N1, N2):
 
 def p_expression_cat_id(t):
     '''catexp :  ordyexp'''
+    print('Got a ordinary expression')
     # Simply inherit the attribute from t[1] and pass on
     t[0] = t[1]
 
@@ -161,6 +164,7 @@ def p_expression_cat_id(t):
 
 def p_expression_ordy_star(t):
     'ordyexp : ordyexp STAR'
+    print("Got a ordinary expression starred")
     t[0] = mk_star_nfa(t[1])
 
 def mk_star_nfa(N):
@@ -197,6 +201,7 @@ def mk_star_nfa(N):
 
 def p_expression_ordy_paren(t):
     'ordyexp : LPAREN expression RPAREN'
+    print('Setting an expression within parentheses')
     # Simply inherit the attribute from t[2] and pass on
     t[0] = t[2]
 
@@ -204,6 +209,7 @@ def p_expression_ordy_paren(t):
     
 def p_expression_ordy_eps(t):
     'ordyexp : EPS'
+    print("Ordinary expressions returned  epsilon")
     t[0] = mk_eps_nfa()
 
 def mk_eps_nfa():
@@ -221,6 +227,7 @@ def mk_eps_nfa():
 
 def p_expression_ordy_str(t):
     'ordyexp : STR'
+    print("Ordinary expressions returned string")
     t[0] = mk_symbol_nfa(t[1])
 
 def mk_symbol_nfa(a):
